@@ -51,8 +51,9 @@ main() {
   local abs_dir folder_name md_file html_file
   abs_dir="$(cd "$input_dir" && pwd)"
   folder_name="$(basename "$abs_dir")"
-  md_file="${folder_name}.md"
-  html_file="${folder_name}.html"
+  # <-- Ahora los archivos generados se colocan dentro de la carpeta de entrada
+  md_file="${abs_dir}/${folder_name}.md"
+  html_file="${abs_dir}/${folder_name}.html"
 
   # Obtener ruta real del script (resuelve enlaces simbólicos)
   local script_path script_dir
