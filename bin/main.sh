@@ -3,7 +3,7 @@
 # Script: main.sh
 # Descripción: Script principal que coordina el merge y conversión a HTML
 #              de múltiples archivos Markdown en una carpeta.
-# Uso: merge-md <ruta_carpeta>
+# Uso: merge-md <ruta_carpeta> [--keep]
 # Dependencias: merge_md_folder.sh, md2html.sh, pandoc
 # ==============================================================================
 
@@ -34,12 +34,13 @@ open_browser() {
 
 # --- Función principal ---
 main() {
-  if [[ $# -ne 1 ]]; then
-    err "Uso: merge-md <ruta_carpeta>"
+  if [[ $# -lt 1 ]]; then
+    err "Uso: merge-md <ruta_carpeta> [--keep]"
     exit 64
   fi
 
   local input_dir="$1"
+  local keep_files="${2:-}"
 
   if [[ ! -d "$input_dir" ]]; then
     err "Error: no existe el directorio '$input_dir'"
@@ -53,7 +54,7 @@ main() {
   md_file="${folder_name}.md"
   html_file="${folder_name}.html"
 
-  # ✅ Obtener ruta real del script (resuelve enlaces simbólicos)
+  # Obtener ruta real del script (resuelve enlaces simbólicos)
   local script_path script_dir
   script_path="$(readlink -f "${BASH_SOURCE[0]}")"
   script_dir="$(cd "$(dirname "$script_path")" && pwd)"
@@ -71,6 +72,23 @@ main() {
   # 3️⃣ Abrir en navegador
   printf "\n🌐 [3/3] Abriendo en navegador...\n"
   open_browser "$html_file"
+
+  # Espera breve antes de limpiar, para permitir que el navegador cargue el archivo
+  sleep 3
+
+  # 🧹 4️⃣ Eliminar archivos temporales (por defecto)
+  if [[ "$keep_files" != "--keep" ]]; then
+    printf "\n🧹 Limpiando archivos temporales...\n"
+    if [[ -f "$md_file" ]]; then
+      rm -f "$md_file"
+    fi
+    if [[ -f "$html_file" ]]; then
+      rm -f "$html_file"
+    fi
+    printf "✅ Archivos eliminados.\n"
+  else
+    printf "\n📦 Opción --keep detectada: se conservarán los archivos generados.\n"
+  fi
 
   printf "\n✅ Proceso completado con éxito.\n"
 }

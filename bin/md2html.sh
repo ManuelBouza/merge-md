@@ -166,7 +166,6 @@ EOF
     --from=gfm \
     --to=html5 \
     --standalone \
-    --metadata "title=${base}" \
     --include-in-header "$TMP_HEADER" \
     --include-before-body "$TMP_PREBODY" \
     --highlight-style=pygments \
