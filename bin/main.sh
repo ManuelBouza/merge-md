@@ -47,6 +47,12 @@ main() {
     exit 66
   fi
 
+  # 🛑 Verificar si existen archivos .md en la carpeta
+  if ! find "$input_dir" -maxdepth 1 -type f -name "*.md" | grep -q .; then
+    err "Error: no se encontraron archivos .md en '$input_dir'"
+    exit 65
+  fi
+
   # Resolver rutas absolutas y nombres
   local abs_dir folder_name md_file html_file
   abs_dir="$(cd "$input_dir" && pwd)"
